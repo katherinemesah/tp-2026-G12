@@ -3,20 +3,25 @@
 #include<cstring>
 using namespace std;
 
-struct ComandaHistorica{
-  char fecha[11]; //DD-MM-AAAA
-  char nombreMozo[50];
-  int codigoProducto;
-  int cantidad;
-  float comision;
+//comandas_dd-mm-aaaa.dat
+
+struct Comanda {
+    char fecha[11]; //DD-MM-AAAA
+    int idMozo;
+	int codigoProducto;
+	int cantidad;
+	float comision;
 };
 
-struct Mozo {
-    int IdMozo;
-    char nombre[50];
-    char password[20];
-    float totalComision;
-};
+//comadas_semana_sX-mm.dat
+//
+// struct Comanda {
+//     char fecha[11]; //DD-MM-AAAA
+//     int idMozo;
+// 	int codigoProducto;
+// 	int cantidad;
+// 	float comision;
+// };
 
 int buscarMozo(Mozo mozos[], int len, char nombreBuscado[]){
     int i = 0;
@@ -37,8 +42,8 @@ void copiarHoja(const char* nombre){
         return;
     }
 
-    ComandaHistorica comandas;
-    while(fread(&comandas, sizeof(ComandaHistorica), 1, f)==1){
+    Comanda comandas;
+    while(fread(&comandas, sizeof(Comanda), 1, f)==1){
 
     }
 }
@@ -49,7 +54,7 @@ void crearHoja(const char* nombre, const char* comanda[]){
         cout<<"No se pudo crear archivo";
         return;
     }
-    ComandaHistorica comanda_semanal;
+    Comanda comanda_semanal;
     int cantidad_archivos = 7;
     while(cantidad_archivos > 0){
         copiarHoja();
@@ -57,10 +62,37 @@ void crearHoja(const char* nombre, const char* comanda[]){
     }
 }
 
-int main(){
-  int semana = 1;
-  char nombre_semana = "comandas_semana_s" << semana << "_01.dat";
-  FILE* comanda_semana = crearHoja(nombre_semana);
+void nombrarArchivos(){
+    char nombre=""
+}
 
+int main(){
+  //pedir fecha y semana para armar el nombre del archivo comandas_semana
+
+  int primer_dia_semana;
+  cout<<"Primer dia de la semana:"
+  cin>>primer_dia_semana;
+
+  cout<<"Numero Semana:"
+  char semana;
+  cin>>semana;
+
+  cout<<"Numero Mes:"
+  char Mes;
+  cin>>Mes;
+
+  //conseguir las 7 comandas de la semana, si no existen comandas ese dia no se cargan 7:
+  //
+  //comandas_dd-mm-aaaa.dat
+  //comandas_dd-mm-aaaa.dat
+  //comandas_dd-mm-aaaa.dat
+  //comandas_dd-mm-aaaa.dat
+  //comandas_dd-mm-aaaa.dat
+  //comandas_dd-mm-aaaa.dat
+  //comandas_dd-mm-aaaa.dat
+
+  char nombre_semana = "comandas_semana_sX-mm.dat";
+  FILE* comanda_semana = crearHoja(nombre_semana);
+  cout<<
    return 0;
 }
