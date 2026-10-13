@@ -37,15 +37,17 @@ struct Comanda{
 // const floar TASA_COMISION=0.10f; Comision de cada venta es el 10% de lo vendido
 
 void cifrarClave(char clave[], int k);
+void VentasxDia(const char* comandas, )
 
 int main(){
 
     return 0;
 }
 
+//k=3
 void cifraarClave(char clave[], int k){
 
-    for(int i=0; clave[i]!=0; i++){
+    for(int i=0; clave[i]!='\0'; i++){
         clave[i]=clave[i]+k;
     }
 }
