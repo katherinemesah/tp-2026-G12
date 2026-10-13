@@ -2,10 +2,10 @@
 #include<cstring>
 #include<cstdio>
 using namespace std;
-
+const floar TASA_COMISION=0.10f;
 //Actualizar stock, se toman los dos primeros structs
 //comandas_historicas.cpp
-struct ComandaHistoric{
+struct ComandaHistoricas{
   char fecha[11]; //DD-MM-AAAA
   char nombreMozo[50]; //nombre completo, repetido en cada venta
   char codigoProducto;
@@ -35,9 +35,25 @@ struct Comanda{
 };
 //inventarios.cpp
 // const floar TASA_COMISION=0.10f; Comision de cada venta es el 10% de lo vendido
+/*===== comandas_historicas.dat  (30 registros, DESORDENADO) =====
+fecha        nombreMozo        codProd   cant   comision
+02-06-2025   Sofia Ramirez         101      2     300.00
+02-06-2025   Bruno Diaz            105      3     240.00
+03-06-2025   Carla Lopez           110      1     320.00
+===== inventario.dat  (ordenado por codigo, CON HUECOS) =====
+codigo   descripcion        precio    stock
+101      Cafe              1500.00       60
+105      Medialuna          800.00       80
+110      Tostado           3200.00       30s */
 
+//COMO SE TRABAJA EN RAM, no paso por parametro archivos
 void cifrarClave(char clave[], int k);
-void VentasxDia(const char* comandas, )
+//Al buscar los mozos se busca que no se repite
+int buscarMozo(Mozo mozos[], int& len, float comision);
+//Se asigna el ID, se acumula la comision x mozo, se descuenta en inventario
+
+
+void actualizarStock(int codProducto, int cantVendida);
 
 int main(){
 
@@ -45,9 +61,25 @@ int main(){
 }
 
 //k=3
-void cifraarClave(char clave[], int k){
+void cifrarClave(char clave[], int k){
 
     for(int i=0; clave[i]!='\0'; i++){
         clave[i]=clave[i]+k;
     }
+}
+
+///Aca al devolver la pos cuando es la primera vez que lo encuentra entonces retorna
+///la primera pos en la que es encontrado cada nombre y no reasigna
+int buscarMozo(Mozo mozos[], int len, char nombreBuscado){
+
+    for(int i=0; i<len; i++){
+        if(strcmp(mozos[i].nombre, nombreBuscado)==0){
+            return i;
+        }
+    }
+        return -1;
+}
+
+int actualizarStock(const char* nomComandas, int codProducto, int cantVendida){
+
 }
