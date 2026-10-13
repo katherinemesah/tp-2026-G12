@@ -53,9 +53,18 @@ int buscarMozo(Mozo mozos[], int& len, float comision);
 //Se asigna el ID, se acumula la comision x mozo, se descuenta en inventario
 
 
-void actualizarStock(int codProducto, int cantVendida);
+void actualizarStock(Comanda ventas[], int vlen, Productos prods[], int pLen, Mozo mozos[], int mlen);
 
 int main(){
+    const int cantMozos=[50];
+    const int cantProductos[100];
+    const int cantVentas[100];
+
+    Mozo mozos[cantMozos];
+    Producto productos[cantProductos];
+    Comanda ventas[cantVentas];
+
+
 
     return 0;
 }
@@ -80,6 +89,6 @@ int buscarMozo(Mozo mozos[], int len, char nombreBuscado){
         return -1;
 }
 
-int actualizarStock(const char* nomComandas, int codProducto, int cantVendida){
+void actualizarStock(Comanda ventas[], int vlen, Productos prods[], int pLen, Mozo mozos[], int mlen){
 
 }
