@@ -26,6 +26,23 @@ int main()
     if (!SemanaValida)
         cout <<"Semana Invalida,ingrese otro numero."<<endl;
     }
+    string Mes ;
+    bool MesValido = false ;
+    while (!MesValido) {
+        cout << "Ingresa el mes que quiere;"<<endl;
+        if (!(cin >> Mes ))
+            return 1;
+        MesValido = (Mes.length() == 2);
+        if ( MesValido) {
+                if (Mes[0] < '0' || Mes [0] > '9' || Mes [1] < '0' || Mes [1] > '9') {
+                    MesValido = false;
+                } else {
+                int NumerodeMes = (Mes[0] - '0') * 10 + (Mes [1] - '0');
+                if (NumerodeMes < 1 || NumerodeMes > 12) MesValido= false ;
+                }
+        }
+        if (!MesValido) cout << "Mes no valido,ingrese otro." << endl;
+    }
 
     return 0;
 }
