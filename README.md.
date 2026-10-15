@@ -1,0 +1,45 @@
+
+Trabajo Práctico grupal de **Algoritmos y Estructuras de Datos** (UTN FRBA) —
+unidad de **archivos binarios en C/C++**.
+
+> **Grupo:** _(grupo 12)_
+> **Integrantes:** _(nombre — usuario de GitHub, uno por línea)_
+
+normalizacion.cpp
+
+//Parte de Ventas:
+
+/*En ventas pide la fecha un sola vez y arma el nombre de la planilla con 
+sprintf(ArchivoDelDia, "comandas_%s.dat", fecha);. abro el archivo con "ab" ya que este sirve para crear uno nuevo o si ya existe ponerlo al final.
+Por cada venta:
+- se pide el numero del mozo y se busca por el archivo mozos.dat, si no existe deja de seguir 
+-si lo encuentra encripta lo que pone el mozo y se compara con la guarda anteriormente, si no coincide se rechaza la venta
+-Para el producto se busca el código en inventario.dat, si lo encuentra pone la cantidad que debe ser mayor a cero y si estas condiciones no se realizan se rechaza esto.
+-La comisión se hace una multiplicación con  precio*cantidad*TASA_COMISION
+-Por último se guarda la venta en la planilla, se descuenta la cantidad vendida del stock y se suma la comisión al acumulado del mozo 
+Al terminar se cierra el archivo y se ordena la planilla por número de mozo
+
+Respecto a las funciones:
+-Para la funciones buscar mozo y producto utilice busqueda binaria ya que me parecía la más adecuada, ambos archivos están ordenados por su clave, y el inventario tiene huecos en los códigos 
+-La función agregar ventas utilice “ab” para crear un archivo si no existe y si existe ponerlo al final.  
+-Actualizar stock y comisión utilice  in situ con "rb+" para leer el registro y se mo
+ dificar, Luego este se vuelve a apuntar con fseek antes de fwrite 
+-Ordenar por mozo utilice en un vector o array y lo ordene por inserción, no lo hice en el disco porque no era tan eficiente 
+
+Algunos casos claves:
+-Si el número de mozo no existe: en la función buscar mozo va a devolver  -1 y el main comprobará si no existe, para luego mostrar un mensaje.
+-Si la contraseña es incorrecta: Se utilizó strcmp para que devuelva un valor distinto de cero si las cadenas no coinciden.
+-Si el producto no existe o no hay stock: En la función buscar producto este devolverá -1 y si el stock es insuficiente la condición p.stockActual < cantidad impide registrar la venta. 
+-Si la planilla del día no existe: El archivo de la planilla contiene el modo“ab” crea el archivo si no existe y permite agregar ventas si ya existe. Si no puede abrirlo, mostrára un mensaje de error 
+
+Las claves no se guardan tal cual en mozos.dat se encriptan con un corrimiento.
+A cada carácter de la clave se le suma K = 3, y al final se agrega \0 para
+marcar dónde termina el texto.
+Para entrar, se encripta la clave que escribe el mozo y se compara con strcmp
+contra la guardada. Si devuelve 0, coinciden y el mozo entra.
+La encriptación se puede deshacer restando K a cada carácter.
+*/
+
+cierre.cpp
+resumen.cpp
+
