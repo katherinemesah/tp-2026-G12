@@ -142,7 +142,7 @@ void ordenarComandasPorMozo(const char* nombre) {
         v[k + 1] = aux;
     }
 
-    f = fopen(nombreArchivo, "wb");
+    f = fopen(nombre, "wb");
     if (f == NULL) return;
     for (int j = 0; j < n; j++) fwrite(&v[j], sizeof(Comanda), 1, f);
     fclose(f);
