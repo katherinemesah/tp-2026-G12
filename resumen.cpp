@@ -4,7 +4,7 @@
 using namespace std;
 
 struct Comanda {
-    int idmozo;
+    int idMozo;
     int codigoProducto;
     int cantidad;
     float comision;
@@ -77,7 +77,7 @@ for (int j=0; Extension [j] != '\0' ; j++) {
     i++;
 }
 NombreArchivo [i] = '\0' ;
-cout << "Archivo a procesar" << NombreArchivo <<endl;
+cout << "Archivo a procesar:" <<NombreArchivo <<endl;
 
 FILE* fsemana = fopen(NombreArchivo, "rb");
 if (fsemana == NULL) {
@@ -93,5 +93,30 @@ if (fsemana == NULL) {
     long ProductosMozo = 0 ;
     float ComisionMozo = 0 ;
     long TotalProductos = 0;
+
+    while (fread(&C, sizeof(Comanda), 1, fsemana)== 1) {
+           if(!MozoSi) {
+            MozoActual = C.idMozo;
+            MozoSi = true ;
+           }else if (C.idMozo != MozoActual) {
+           VerMozo(MozoActual, ProductosMozo, ComisionMozo);
+           MozoActual = C.idMozo;
+           ProductosMozo = 0;
+           ComisionMozo = 0;
+           }
+           ProductosMozo += C.cantidad;
+           ComisionMozo += C.comision;
+           TotalProductos += C.cantidad;
+           }
+           fclose(fsemana);
+
+           if(MozoSi) {
+            VerMozo(MozoActual, ProductosMozo, ComisionMozo);
+           } else {
+           cout<< "La planilla no tiene ventas"<<endl;
+           }
+
+           cout <<"Total de productos vendidos en la semana pedida" << TotalProductos <<endl;
+
     return 0;
 }
