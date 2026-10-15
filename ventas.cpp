@@ -148,3 +148,103 @@ void ordenarComandasPorMozo(const char* nombre) {
     fclose(f);
 }
 
+//MAIN
+int main() {
+    
+    char fecha[50];
+    cout << "Ingrese la fecha del dia de esta manera (DD-MM-AAAA): ";
+    cin >> fecha;
+
+    char ArchivoDelDia[100];
+    sprintf(ArchivoDelDia, "comandas_%s.dat", fecha);
+
+    FILE* f = fopen(ArchivoDelDia, "ab");
+    if (f == NULL) {
+        cout << "Error al abrir el archivo del dia." << endl;
+        return 1;
+    }
+
+    int opcion = -1;
+    while (opcion != 0) {
+    cout << endl << "VENTAS " << fecha << ":" << endl;
+    cout << "1. Cargar venta" << endl;
+    cout << "0. Terminar y ordenar" << endl;
+    cout << "Opcion: ";
+    cin >> opcion;
+
+        if (opcion != 1) {
+            if (opcion != 0) cout << "Opcion invalida." << endl;
+            continue;
+    }
+        int idMozo;
+        cout << "Numero de mozo: ";
+        cin >> idMozo;
+
+        Mozo m;
+        long posMozo = BuscarMozo("mozos.dat", idMozo, m);
+        if (posMozo == -1) {
+            cout << "No se encuentra Mozo, por favor vuelva a poner el numero correctamente." << endl;
+            continue;
+        }
+
+        char clave[50];
+        cout << "Clave: ";
+        cin >> clave;
+
+        char claveEncriptada[50];
+        encriptar(clave, claveEncriptada);
+
+        if (strcmp(claveEncriptada, m.password) != 0) {
+            cout << "Clave incorrecta, por favor vuelva a poner la clave correctamente." << endl;
+            continue;
+        }
+
+        int codigoProducto;
+        cout << "Codigo de producto: ";
+        cin >> codigoProducto;
+
+        Producto p;
+        long posProducto = BuscarProducto("inventario.dat", codigoProducto, p);
+        if (posProducto == -1) {
+            cout << "El producto no existe." << endl;
+            continue;
+        }
+
+        int cantidad;
+        cout << "Cantidad: ";
+        cin >> cantidad;
+
+         if (cantidad <= 0) {                                  
+            cout << "La cantidad debe ser mayor a 0." << endl;
+            continue;
+        }
+
+        if (p.stockActual < cantidad) {
+            cout << "No hay stock del producto." << endl;
+            continue;
+        }
+
+        float comision = p.precio * cantidad * TASA_COMISION;
+
+        Comanda c;
+        c.idMozo = idMozo;
+        c.codigoProducto = codigoProducto;
+        c.cantidad = cantidad;
+        c.comision = comision;
+        if(fwrite(&c, sizeof(Comanda), 1, f) !=1){
+            cout<<"Error al guardar la venta"<<endl;
+            continue;
+        }
+
+        RestarProductoAlStock("inventario.dat", posProducto, cantidad);
+        sumarComisionMozo("mozos.dat", posMozo, comision);
+
+        cout << "Venta agregada. La comision es: " << comision << endl;
+    }
+
+    fclose(f);
+    ordenarComandasPorMozo(ArchivoDelDia);
+
+    cout << " Se ordeno archivo por Mozo." << endl;
+    return 0;
+}
