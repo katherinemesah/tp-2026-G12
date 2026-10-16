@@ -38,7 +38,7 @@ struct Comanda{
 //1.Por pedido, la clave de mozo se cifra k=3 SI
 void cifrarClave(char clave[], int k);
 //2.Al buscar los mozos se busca que no se repita SI
-int buscarMozo(Mozo mozos[], int& mlen, char nombreBuscado[]);
+int buscarMozo(Mozo mozos[], int mlen, char nombreBuscado[]);
 //3. Pasar inventario SI
 void inventarioProductos(Producto prod[], int& plen);
 //4. busca productos para restarle SI
@@ -55,19 +55,20 @@ void guardaStockActual(Producto prod[], int plen);
 void generarArchivoMozo(Mozo mozos[], int mlen);
 
 int main(){
-    const int cantMozos[50];
+    const int MAX_Mozos=50;
     int mlen=0;
-    const int cantProductos[100];
+    const int MAX_Productos=100;
     int plen=0;
-    const int cantVentas[100];
+    const int MAX_Ventas=100;
     int vlen=0;
     const int k=3;
 
-    Mozo mozos[cantMozos];
-    Producto productos[cantProductos];
-    Comanda ventas[cantVentas];
+    Mozo mozos[MAX_Mozos];
+    Producto productos[MAX_Productos];
+    Comanda ventas[MAX_Ventas];
 
     inventarioProductos(productos, plen);
+
     leerComandasHistoricas(productos, plen, ventas, vlen, mozos, mlen, k);
     ordenarVentas(ventas,  vlen);
     asignaNombreDia(ventas, vlen);
@@ -90,7 +91,7 @@ void cifrarClave(char clave[], int k){
 ///la primera pos en la que es encontrado cada nombre y no reasigna
 int buscarMozo(Mozo mozos[], int mlen, char nombreBuscado[]){
 
-    for(int i=0; i<len; i++){
+    for(int i=0; i<mlen; i++){
         if(strcmp(mozos[i].nombre, nombreBuscado)==0){
             return i;
         }
@@ -104,7 +105,7 @@ void inventarioProductos(Producto prod[], int& plen){
         cout<<"No se pudo abrir el archivo";
         return;
     }
-    while(fread(&prod[plen), sizeof(Producto), 1, fprod)==1){
+    while(fread(&prod[plen], sizeof(Producto), 1, fprod)==1){
         plen++;
     }
     fclose(fprod);
@@ -141,26 +142,43 @@ void leerComandasHistoricas(Producto prod[], int plen, Comanda ventas[], int& vl
 
     ComandaHistoricas comandas;
     vlen=0;
-    plen=0;
 
     char contraxdefecto[20]="1234";
     cifrarClave(contraxdefecto, k);
 
     while(fread(&comandas, sizeof(ComandaHistoricas), 1, fcomandas)==1){
-        int idAsignado=buscarMozo(mozos, mlen, comandas.nombreMozo, comandas.comision, contraxdefecto);
+        int posMozo=buscarMozo(mozos, mlen, comandas.nombreMozo);
+        int idAsignado;
+
+        if(posMozo!=-1){
+            mozos[posMozo].totalComision+=comandas.comision;
+            idAsignado=mozos[posMozo].idMozo;
+        }
+        else{
+            Mozo nuevo;
+            nuevo.idMozo=mlen+1;
+            srtcpy(nuevo.nombre, comandas.nombreMozo);
+            srtcpy(nuevo.password, contraxdefecto);
+            nuevo.totalComision=comandas.comision;
+
+            mozos[mlen]=nuevo;
+            idAsignado=nuevo.idMozo;
+            mlen++;
+        }
 
         int posProd=BuscarActualizarInv(prod,  plen, comandas.codigoProducto);
         if(posProd!=-1){
             prod[posProd].stockActual-=comandas.cantidad;
-        }
+
         if(prod[posProd].stockActual<0){
             cout<<"El stock esta en negativo";//<<comandas.codigoProducto<<"("<<prod[posProd].stockActual<<"unidades)"<<endl;
         }
+    }
         else{
             cout<<"El producto con codigo"<<comandas.codigoProducto<<" no existe"<<endl;
         }
 
-        if(vlen<cantProductos){
+        if(vlen<100){
             strcpy(ventas[vlen].fecha, comandas.fecha);
             ventas[vlen].idMozo=idAsignado;
             ventas[vlen].codigoProducto=comandas.codigoProducto;
@@ -206,27 +224,26 @@ void asignarNombreDia(Comanda ventas[], int vlen){
 
         FILE* fdia=fopen(nombreArchivo, "wb");
         if(fdia==NULL){
-            cout<<"No se pudo crear el archivo";
-            return;
+            cout<<"No se pudo crear el archivo"<<endl;
+            while(i<vlen && strcmp(ventas[i].fecha, fechaActual)==0){
+                i++;
+                continue;
+            }
         }
 
         while(i<vlen && strcmp(ventas[i].fecha, fechaActual)==0){
-            Comanda comanda;
-            comanda.idMozo=ventas[i].idMozo;
-            comanda.codigoProducto=ventas[i].codigoProducto;
-            comanda.cantidad=ventas[i].cantidad;
-            comanda.comision=ventas[i].comision;
 
-            fwrite(&comanda, sizeof(Comanda), 1, fdia);
+            fwrite(&ventas[i], sizeof(Comanda), 1, fdia);
             i++;
         }
+
         fclose(fdia);
         cout<<"Planilla generada: "<<nombreArchivo<<endl;
 
     }
 }
 
-void guardaStockActual(Productos prod[], int plen){
+void guardaStockActual(Producto prod[], int plen){
     FILE* fstock=fopen("inventario.dat", "wb");
     if(fstock==NULL){
         cout<<"No se pudo abrir el archivo";
