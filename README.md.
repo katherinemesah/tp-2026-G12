@@ -3,7 +3,8 @@ Trabajo Práctico grupal de **Algoritmos y Estructuras de Datos** (UTN FRBA) —
 unidad de **archivos binarios en C/C++**.
 
 > **Grupo:** _(grupo 12)_
-> **Integrantes:** _(nombre — usuario de GitHub, uno por línea)_
+> **Integrantes:** _(Matias Pipino — matipipino)_
+                   _( — )_
 
 normalizacion.cpp
 
@@ -40,6 +41,22 @@ contra la guardada. Si devuelve 0, coinciden y el mozo entra.
 La encriptación se puede deshacer restando K a cada carácter.
 */
 
-cierre.cpp
+//Parte de cierre:
+
+/*Cierre:
+
+Responsable: Matias Pipino
+
+Este programa se ejecuta en tercer lugar, despues de ventas. Unifica las planillas de ventas diarias de cada semana en un unico archivo, manteniendo el ordenamiento por mozo.
+Lee archivos binarios con el nombre formato "comandas_dd-mm-aaaa.dat" y genera archivos binarios con el nombre formato "comandas_semana_sX-mm.dat".
+
+Algunas partes clave:
+- Lectura de multiples planillas diarias recorriendo y procesando los archivos binarios de cada dia de la semana, extrayendo los registros de comandas. Se abren secuencialmente los archivos diarios en 
+modo lectura binaria con fopen usando "rb" y se leen las estructuras de registros con fread. Cada registro leido se escribe directamente con fwrite en la planilla semanal abierta en modo escritura binaria "wb".
+- Ordenamiento por mozo: Se leen las comandas de todos los dias de la semana procesandolas por ID de mozo para asegurar que al guardarlas en el archivo semanal queden agrupadas y ordenadas por cada mozo.
+- Se verifica si el puntero al archivo es "null" al hacer "fopen". Si no existe la planilla del dia, se muestra un mensaje de aviso y el programa continua con el resto de los dias sin frenar ni cerarse.
+- Se usa la condicion "fread > 0" dentro de un bucle "while" para procesar solo los registros que existen y evitar leer basura al dinal del archivo binario. 
+
+*/
 resumen.cpp
 
