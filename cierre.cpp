@@ -13,7 +13,7 @@ struct Comanda{
 
 int diasDelMes(int mes, int anio){
     int dias[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    if(mes == 2 && ((anio % 4 == 0 && anio & 100 != 0) || (anio % 400 == 0))){
+    if(mes == 2 && ((anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0))){
         return 29;
     }
     return dias[mes];
