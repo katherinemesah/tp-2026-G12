@@ -34,7 +34,7 @@ void diaAnterior(int &dia, int &mes, int &anio){
 void aparearDosArchivos(const char* nomA, const char* nomB, const char* nomC){
     FILE* a = fopen(nomA, "rb");
     FILE* b = fopen(nomB, "rb");
-    FILE* c = fopen(nomC, "rb");
+    FILE* c = fopen(nomC, "wb");
 
     if(a == NULL || b == NULL || c == NULL){
         cout<<"Error al abrir los archivos"<<endl;
