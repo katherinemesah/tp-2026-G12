@@ -268,8 +268,3 @@ void generarArchivoMozo(Mozo mozos[], int mlen){
     fclose(fmozo);
     cout<<"El archivo de mozo se cargo correctamente"<<endl;
 }
-
-
-void actualizarStock(Comanda ventas[], int vlen, Producto prods[], int pLen, Mozo mozos[], int mlen){
-
-}
