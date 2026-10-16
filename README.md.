@@ -4,11 +4,12 @@ unidad de **archivos binarios en C/C++**.
 
 > **Grupo:** _(grupo 12)_
 > **Integrantes:** _(Matias Pipino — matipipino)_
-                   _( — )_
+                   _(Jazmin Paco — Jazmin Paco )_
 
 normalizacion.cpp
 
 //Parte de Ventas:
+//Responsable: Jazmin Paco
 
 /*En ventas pide la fecha un sola vez y arma el nombre de la planilla con 
 sprintf(ArchivoDelDia, "comandas_%s.dat", fecha);. abro el archivo con "ab" ya que este sirve para crear uno nuevo o si ya existe ponerlo al final.
