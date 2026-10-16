@@ -88,7 +88,7 @@ void cifrarClave(char clave[], int k){
 
 ///Aca al devolver la pos cuando es la primera vez que lo encuentra entonces retorna
 ///la primera pos en la que es encontrado cada nombre y no reasigna
-int buscarMozo(Mozo mozos[], int len, char nombreBuscado[]){
+int buscarMozo(Mozo mozos[], int mlen, char nombreBuscado[]){
 
     for(int i=0; i<len; i++){
         if(strcmp(mozos[i].nombre, nombreBuscado)==0){
@@ -181,12 +181,12 @@ void leerComandasHistoricas(Producto prod[], int plen, Comanda ventas[], int& vl
 }
 
 void ordenarVentas(Comanda ventas[], int vlen){
-    for(int i=0; i<vlen, i++){
+    for(int i=1; i<vlen; i++){
 
-    Comanda clave=venta[i];
+    Comanda clave=ventas[i];
     int j=i-1;
 
-        while(j>=0 && (strcmp(ventas[j].fecha,clave.fecha)>0 || (strcmp(ventas[j].fecha, clave.fecha)==0 && ventas[i].idMozo>clave.idMozo))){
+        while(j>=0 && (strcmp(ventas[j].fecha,clave.fecha)>0 || (strcmp(ventas[j].fecha, clave.fecha)==0 && ventas[j].idMozo>clave.idMozo))){
             ventas[j+1]=ventas[j];
             j--;
         }
@@ -226,14 +226,14 @@ void asignarNombreDia(Comanda ventas[], int vlen){
     }
 }
 
-void guardaStockActual(Productos prod[], int pLen){
+void guardaStockActual(Productos prod[], int plen){
     FILE* fstock=fopen("inventario.dat", "wb");
-    if(ftock==NULL){
+    if(fstock==NULL){
         cout<<"No se pudo abrir el archivo";
         return;
     }
     for(int i=0; i<plen; i++){
-        fwrite(&prods[i], sizeof(Producto), 1, fstock);
+        fwrite(&prod[i], sizeof(Producto), 1, fstock);
     }
     fclose(fstock);
     cout<<"El inventario se actualizo con exito"<<endl;
@@ -246,7 +246,7 @@ void generarArchivoMozo(Mozo mozos[], int mlen){
         return;
     }
     for(int i=0; i<mlen; i++){
-        fwrite(&mozos[i], sizeof(Mozo), 1, fmozo;
+        fwrite(&mozos[i], sizeof(Mozo), 1, fmozo);
     }
     fclose(fmozo);
     cout<<"El archivo de mozo se cargo correctamente"<<endl;
