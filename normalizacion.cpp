@@ -57,7 +57,7 @@ void actualizarStock(Comanda ventas[], int vlen, Producto prods[], int pLen, Moz
 
 int main(){
     const int cantMozos=50;
-    const int cantProductos=100];
+    const int cantProductos=100;
     const int cantVentas=100;
 
     Mozo mozos[cantMozos];
