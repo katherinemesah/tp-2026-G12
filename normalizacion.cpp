@@ -2,7 +2,7 @@
 #include<cstring>
 #include<cstdio>
 using namespace std;
-const floar TASA_COMISION=0.10f;
+const float TASA_COMISION=0.10f;
 //Actualizar stock, se toman los dos primeros structs
 //comandas_historicas.cpp
 struct ComandaHistoricas{
@@ -24,7 +24,7 @@ struct Mozo{
   int idMozo;
   char nombre[50];
   char password[20];
-  float total Comision;
+  float totalComision;
 };
 
 struct Comanda{
@@ -53,10 +53,10 @@ int buscarMozo(Mozo mozos[], int& len, float comision);
 //Se asigna el ID, se acumula la comision x mozo, se descuenta en inventario
 
 
-void actualizarStock(Comanda ventas[], int vlen, Productos prods[], int pLen, Mozo mozos[], int mlen);
+void actualizarStock(Comanda ventas[], int vlen, Producto prods[], int pLen, Mozo mozos[], int mlen);
 
 int main(){
-    const int cantMozos=[50];
+    const int cantMozos[50];
     const int cantProductos[100];
     const int cantVentas[100];
 
@@ -89,6 +89,6 @@ int buscarMozo(Mozo mozos[], int len, char nombreBuscado){
         return -1;
 }
 
-void actualizarStock(Comanda ventas[], int vlen, Productos prods[], int pLen, Mozo mozos[], int mlen){
+void actualizarStock(Comanda ventas[], int vlen, Producto prods[], int pLen, Mozo mozos[], int mlen){
 
 }
