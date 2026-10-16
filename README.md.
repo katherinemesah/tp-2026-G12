@@ -5,7 +5,7 @@ unidad de **archivos binarios en C/C++**.
 > **Grupo:** _(grupo 12)_
 > **Integrantes:** _(Matias Pipino — matipipino)_
                    _(Jazmin Paco — japacocanaviri-hub )_
-                   _( — )_
+                   _(Ignacio Dominguez — igna2756)_
                    _( — )_
 
 normalizacion.cpp
@@ -61,5 +61,26 @@ modo lectura binaria con fopen usando "rb" y se leen las estructuras de registro
 - Se usa la condicion "fread > 0" dentro de un bucle "while" para procesar solo los registros que existen y evitar leer basura al dinal del archivo binario. 
 
 */
-resumen.cpp
+//Parte de Resumen:
+Responsable:Ignacio Dominguez
+
+El programa pide al usuario que ingrese el numero de semana y de mes que quiere,validando que ambos datos sean validos.
+Con estos datos arma el nombre del archivo de la planilla semanal siguiendo el formato dado por la catedra.Una vez hecho eso se abre el archivo en modo "rb" al solo necesitarse leer las ventas registradas durante esa semana.
+Por cada registro leído:
+-Se obtiene numero de mozo,la cantidad vendida y la comisión correspondiente.
+-Se acumula la cantidad de productos vendidos y la comisión actual.
+-Se suma la cantidad de productos al total general de la semana.
+-Al cambiar el numero de mozo,se muestran los resultados del anterior y se reinician los acumuladores para empezar con el siguiente.
+Al terminar de leer el archivo,se muestra el resumen del ultimo mozo,ya que el cambio de mozo que permite mostrar los anteriores resultados no ocurre después del ultimo registro.
+Finalmente se cierra el archivo y se muestra el total de productos vendidos durante la semana.
+Respecto a las funciones:
+-Utilizo VerMozo para mostrar el numero de mozo,los productos vendidos y la comisión acumulada.
+-Para construir el nombre del archivo utilice arreglos de caracteres y ciclos for,copiando cada parte para construirlo.Habia otros métodos pero utilice este nomas para apegarme mas a lo que pide el trabajo.
+-Para la lectura de la planilla semanal utilice un fread el cual me permite leer los registros binarios.
+-Utilice un Corte de Control ya que la planilla esta ordenada por numero de mozo haciéndola adecuada.
+Algunos casos clave:
+-Si el numero de semana no esta entre el 1 y el 6 muestra un mensaje y la vuelve a pedir.
+-Si el mes no tiene exacto 2 dígitos y esos 2 dígitos no son validos se muestra un mensaje y lo vuelve a pedir
+-Si no se puede abrir el archivo se muestra un mensaje por pantalla y el programa termina.
+-Si la planilla esta vacia se informa que no hay ventas y el total queda en 0.
 
