@@ -56,9 +56,9 @@ int buscarMozo(Mozo mozos[], int& len, float comision);
 void actualizarStock(Comanda ventas[], int vlen, Producto prods[], int pLen, Mozo mozos[], int mlen);
 
 int main(){
-    const int cantMozos[50];
-    const int cantProductos[100];
-    const int cantVentas[100];
+    const int cantMozos=50;
+    const int cantProductos=100];
+    const int cantVentas=100;
 
     Mozo mozos[cantMozos];
     Producto productos[cantProductos];
@@ -79,7 +79,7 @@ void cifrarClave(char clave[], int k){
 
 ///Aca al devolver la pos cuando es la primera vez que lo encuentra entonces retorna
 ///la primera pos en la que es encontrado cada nombre y no reasigna
-int buscarMozo(Mozo mozos[], int len, char nombreBuscado){
+int buscarMozo(Mozo mozos[], int len, char nombreBuscado[]){
 
     for(int i=0; i<len; i++){
         if(strcmp(mozos[i].nombre, nombreBuscado)==0){
