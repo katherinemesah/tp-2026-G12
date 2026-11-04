@@ -13,7 +13,7 @@ struct Comanda{
 
 int diasDelMes(int mes, int anio){
     int dias[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    if(mes == 2 && ((anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0))){
+    if(mes == 2 && ((anio % 4 == 0 && anio & 100 != 0) || (anio % 400 == 0))){
         return 29;
     }
     return dias[mes];
@@ -34,7 +34,7 @@ void diaAnterior(int &dia, int &mes, int &anio){
 void aparearDosArchivos(const char* nomA, const char* nomB, const char* nomC){
     FILE* a = fopen(nomA, "rb");
     FILE* b = fopen(nomB, "rb");
-    FILE* c = fopen(nomC, "wb");
+    FILE* c = fopen(nomC, "rb");
 
     if(a == NULL || b == NULL || c == NULL){
         cout<<"Error al abrir los archivos"<<endl;
@@ -78,22 +78,29 @@ void procesarCierreSemanal(char archivosDiarios[7][25], const char* archivoSeman
     FILE* f1 = fopen(archivosDiarios[0], "rb");
     FILE* fAcu = fopen(auxAcumulado, "wb");
 
-    if(f1 == NULL || fAcu == NULL){
-        cout<<"Error al procesar el primer dia de la semana ("<<archivosDiarios[0]<<")."<<endl;
+    if(fAcu == NULL){
+        cout<<"Error al crear el archivo acumulado"<<endl;
         if(f1) fclose(f1);
-        if(fAcu) fclose(fAcu);
         return;
     }
 
     Comanda r;
 
-    while (fread(&r, sizeof(Comanda), 1, f1) == 1){
-        fwrite(&r, sizeof(Comanda), 1, fAcu);
+    if(f1 != NULL){
+        while (fread(&r, sizeof(Comanda), 1, f1) == 1){
+            fwrite(&r, sizeof(Comanda), 1, fAcu);
+        }
+        fclose(f1);
     }
-
-    fclose(f1); fclose(fAcu);
+    fclose(fAcu);
 
     for(int i = 1; i < 7; i++){
+        FILE* fPrueba = fopen(archivosDiarios[i], "rb");
+        if (fPrueba == NULL){
+            continue;
+        }
+        fclose(fPrueba);
+
         aparearDosArchivos(auxAcumulado, archivosDiarios[i], auxSiguiente);
 
         FILE* fOrig = fopen(auxSiguiente, "rb");
@@ -173,3 +180,4 @@ int main(){
 
     return 0;
 }
+
