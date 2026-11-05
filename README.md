@@ -24,11 +24,11 @@ Por cada venta:
 Al terminar se cierra el archivo y se ordena la planilla por número de mozo
 
 Respecto a las funciones:
--Para la funciones buscar mozo y producto utilice busqueda binaria ya que me parecía la más adecuada, ambos archivos están ordenados por su clave, y el inventario tiene huecos en los códigos 
+-Para las funciones buscar mozo y producto utilice búsqueda binaria ya que me parecía la más adecuada, ambos archivos están ordenados por su clave, y el inventario tiene huecos en los códigos 
 -La función agregar ventas utilice “ab” para crear un archivo si no existe y si existe ponerlo al final.  
 -Actualizar stock y comisión utilice  in situ con "rb+" para leer el registro y se mo
  dificar, Luego este se vuelve a apuntar con fseek antes de fwrite 
--Ordenar por mozo utilice en un vector o array y lo ordene por inserción, no lo hice en el disco porque no era tan eficiente 
+-Ordenar por mozo utilice una lista enlazada con inserción ordenada, lee cada comanda del archivo y la inserta en su lugar según el numero de Mozo. Luego recorro la lista para grabar y libero los nodos. Use una lista porque no tiene un máximo de ventas, no lo hice directamente en el disco porque no es muy eficiente en estos casos. 
 
 Algunos casos claves:
 -Si el número de mozo no existe: en la función buscar mozo va a devolver  -1 y el main comprobará si no existe, para luego mostrar un mensaje.
