@@ -1,81 +1,85 @@
-# TP Integrador — Buffet Albert Einstein
 
 Trabajo Práctico grupal de **Algoritmos y Estructuras de Datos** (UTN FRBA) —
 unidad de **archivos binarios en C/C++**.
 
-> **Grupo:** _(completar: número de grupo)_
-> **Integrantes:** _(nombre — usuario de GitHub, uno por línea)_
+> **Grupo:** _(grupo 12)_
+> **Integrantes:** _(Matias Pipino — matipipino)_
+                   _(Jazmin Paco — japacocanaviri-hub )_
+                   _(Ignacio Dominguez — igna2756)_
+                   _(Katherine Mesa— katherinemesah)_
 
-La consigna completa está en **`enunciado.pdf`**. Leela antes de arrancar: el
-cliente (Alberto) cuenta su problema a su manera y ustedes tienen que descubrir
-cómo resolverlo con lo que vimos de archivos.
+normalizacion.cpp
 
-## Estructura del repo
+//Parte de Ventas:
+//Responsable: Jazmin Paco
 
-```
-.
-├── enunciado.pdf              # la consigna
-├── datos/                     # archivos PROVISTOS por la cátedra (no se tocan)
-│   ├── comandas_historicas.dat
-│   ├── inventario.dat
-│   └── dump_datos_de_prueba.txt   # los dos .dat en texto, para verificar la lectura
-├── .gitignore
-│
-│   # --- estos los crean USTEDES (no vienen en el repo base) ---
-├── normalizacion.cpp          # cada uno con su propio main; NO hay main.cpp
-├── ventas.cpp
-├── cierre.cpp
-└── resumen.cpp
-```
+/*En ventas pide la fecha un sola vez y arma el nombre de la planilla con 
+sprintf(ArchivoDelDia, "comandas_%s.dat", fecha);. abro el archivo con "ab" ya que este sirve para crear uno nuevo o si ya existe ponerlo al final.
+Por cada venta:
+- se pide el numero del mozo y se busca por el archivo mozos.dat, si no existe deja de seguir 
+-si lo encuentra encripta lo que pone el mozo y se compara con la guarda anteriormente, si no coincide se rechaza la venta
+-Para el producto se busca el código en inventario.dat, si lo encuentra pone la cantidad que debe ser mayor a cero y si estas condiciones no se realizan se rechaza esto.
+-La comisión se hace una multiplicación con  precio*cantidad*TASA_COMISION
+-Por último se guarda la venta en la planilla, se descuenta la cantidad vendida del stock y se suma la comisión al acumulado del mozo 
+Al terminar se cierra el archivo y se ordena la planilla por número de mozo
 
-Los 4 programas los escriben ustedes desde cero: el repo base no trae código.
-Créenlos en la raíz del repo (como en el diagrama del enunciado).
+Respecto a las funciones:
+-Para la funciones buscar mozo y producto utilice busqueda binaria ya que me parecía la más adecuada, ambos archivos están ordenados por su clave, y el inventario tiene huecos en los códigos 
+-La función agregar ventas utilice “ab” para crear un archivo si no existe y si existe ponerlo al final.  
+-Actualizar stock y comisión utilice  in situ con "rb+" para leer el registro y se mo
+ dificar, Luego este se vuelve a apuntar con fseek antes de fwrite 
+-Ordenar por mozo utilice en un vector o array y lo ordene por inserción, no lo hice en el disco porque no era tan eficiente 
 
-## Cómo trabajar
+Algunos casos claves:
+-Si el número de mozo no existe: en la función buscar mozo va a devolver  -1 y el main comprobará si no existe, para luego mostrar un mensaje.
+-Si la contraseña es incorrecta: Se utilizó strcmp para que devuelva un valor distinto de cero si las cadenas no coinciden.
+-Si el producto no existe o no hay stock: En la función buscar producto este devolverá -1 y si el stock es insuficiente la condición p.stockActual < cantidad impide registrar la venta. 
+-Si la planilla del día no existe: El archivo de la planilla contiene el modo“ab” crea el archivo si no existe y permite agregar ventas si ya existe. Si no puede abrirlo, mostrára un mensaje de error 
 
-Los programas leen y escriben archivos `.dat` en la carpeta donde se ejecutan.
-Los archivos de `datos/` son los **originales** y no se modifican: copiálos a la
-carpeta donde vas a compilar y correr, y trabajá sobre esas copias.
+Las claves no se guardan tal cual en mozos.dat se encriptan con un corrimiento.
+A cada carácter de la clave se le suma K = 3, y al final se agrega \0 para
+marcar dónde termina el texto.
+Para entrar, se encripta la clave que escribe el mozo y se compara con strcmp
+contra la guardada. Si devuelve 0, coinciden y el mozo entra.
+La encriptación se puede deshacer restando K a cada carácter.
+*/
 
-```bash
-cp datos/comandas_historicas.dat datos/inventario.dat .
-```
+//Parte de cierre:
 
-Compilar y correr cada programa (cada uno tiene su propio `main`, no hay `main.cpp`):
+/*Cierre:
 
-```bash
-g++ -O2 -o normalizacion normalizacion.cpp
-g++ -O2 -o ventas        ventas.cpp
-g++ -O2 -o cierre        cierre.cpp
-g++ -O2 -o resumen       resumen.cpp
-```
+Responsable: Matias Pipino
 
-Orden de ejecución (cada programa deja los archivos que usa el siguiente):
+Este programa se ejecuta en tercer lugar, despues de ventas. Unifica las planillas de ventas diarias de cada semana en un unico archivo, manteniendo el ordenamiento por mozo.
+Lee archivos binarios con el nombre formato "comandas_dd-mm-aaaa.dat" y genera archivos binarios con el nombre formato "comandas_semana_sX-mm.dat".
 
-```
-./normalizacion     # historicas + inventario  ->  mozos.dat, comandas_dd-mm-aaaa.dat (varios), inventario actualizado
-./ventas            # carga interactiva de la semana  ->  agrega a las planillas del día
-./cierre            # junta los días de la semana      ->  comandas_semana_sX-mm.dat
-./resumen           # imprime el resumen por mozo + total del buffet
-```
+Algunas partes clave:
+- Lectura de multiples planillas diarias recorriendo y procesando los archivos binarios de cada dia de la semana, extrayendo los registros de comandas. Se abren secuencialmente los archivos diarios en 
+modo lectura binaria con fopen usando "rb" y se leen las estructuras de registros con fread. Cada registro leido se escribe directamente con fwrite en la planilla semanal abierta en modo escritura binaria "wb".
+- Ordenamiento por mozo: Se leen las comandas de todos los dias de la semana procesandolas por ID de mozo para asegurar que al guardarlas en el archivo semanal queden agrupadas y ordenadas por cada mozo.
+- Se verifica si el puntero al archivo es "null" al hacer "fopen". Si no existe la planilla del dia, se muestra un mensaje de aviso y el programa continua con el resto de los dias sin frenar ni cerarse.
+- Se usa la condicion "fread > 0" dentro de un bucle "while" para procesar solo los registros que existen y evitar leer basura al dinal del archivo binario. 
 
-## Verificar que leen bien el binario
+*/
+//Parte de Resumen:
+Responsable:Ignacio Dominguez
 
-`datos/dump_datos_de_prueba.txt` tiene el contenido de los dos archivos provistos
-en texto legible. Si tu programa imprime otra cosa al leerlos, revisá los `struct`
-(orden de campos / tamaños): tienen que dar `sizeof(ComandaHistorica)=76` y
-`sizeof(Producto)=64`.
-
-## Qué se entrega
-
-- Este mismo repo (uno por grupo), con los **4 programas** `.cpp` en la raíz
-  (cada uno con su propio `main`, no hay `main.cpp`).
-- El **README** con el grupo, los integrantes (nombre + usuario de GitHub) y, si
-  hace falta, cualquier aclaración de cómo correrlo.
-- Los `.dat` de `datos/` son los **provistos por la cátedra** y ya vienen en el
-  repo: no los borren ni agreguen otros. Cualquier `.dat` que ustedes copien a la
-  raíz o generen al correr **no** se versiona (el `.gitignore` ya los deja afuera).
-  La cátedra corre sus programas sobre su propio dataset.
-- **Commits repartidos:** cada integrante tiene que tener commits propios a lo
-  largo del trabajo. El historial es parte de lo que se mira para la defensa
-  individual (no vale un único commit final ni que suba todo una sola persona).
+El programa pide al usuario que ingrese el numero de semana y de mes que quiere,validando que ambos datos sean validos.
+Con estos datos arma el nombre del archivo de la planilla semanal siguiendo el formato dado por la catedra.Una vez hecho eso se abre el archivo en modo "rb" al solo necesitarse leer las ventas registradas durante esa semana.
+Por cada registro leído:
+-Se obtiene numero de mozo,la cantidad vendida y la comisión correspondiente.
+-Se acumula la cantidad de productos vendidos y la comisión actual.
+-Se suma la cantidad de productos al total general de la semana.
+-Al cambiar el numero de mozo,se muestran los resultados del anterior y se reinician los acumuladores para empezar con el siguiente.
+Al terminar de leer el archivo,se muestra el resumen del ultimo mozo,ya que el cambio de mozo que permite mostrar los anteriores resultados no ocurre después del ultimo registro.
+Finalmente se cierra el archivo y se muestra el total de productos vendidos durante la semana.
+Respecto a las funciones:
+-Utilizo VerMozo para mostrar el numero de mozo,los productos vendidos y la comisión acumulada.
+-Para construir el nombre del archivo utilice arreglos de caracteres y ciclos for,copiando cada parte para construirlo.Habia otros métodos pero utilice este nomas para apegarme mas a lo que pide el trabajo.
+-Para la lectura de la planilla semanal utilice un fread el cual me permite leer los registros binarios.
+-Utilice un Corte de Control ya que la planilla esta ordenada por numero de mozo haciéndola adecuada.
+Algunos casos clave:
+-Si el numero de semana no esta entre el 1 y el 6 muestra un mensaje y la vuelve a pedir.
+-Si el mes no tiene exacto 2 dígitos y esos 2 dígitos no son validos se muestra un mensaje y lo vuelve a pedir
+-Si no se puede abrir el archivo se muestra un mensaje por pantalla y el programa termina.
+-Si la planilla esta vacia se informa que no hay ventas y el total queda en 0.
