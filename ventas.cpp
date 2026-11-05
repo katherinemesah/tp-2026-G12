@@ -23,9 +23,12 @@ struct Comanda {
     int cantidad;
     float comision;
 };
+struct Nodo{
+Comanda info;
+Nodo* sig;
+};
 //varibles constantes
 const float TASA_COMISION = 0.10f;
-const int MAX_COMANDAS = 1000;
 const int K = 3; 
 
 // funcion de encriptacion
@@ -116,38 +119,50 @@ void sumarComisionMozo(const char*nombre, long pos, float comision) {
 }
 
 //Funcion para ordenar comandas por Mozo
+//utilice insertar ordenar y luego cree ordenar comandas por mozo
+Nodo* insertarOrdenado(Nodo* lista, Comanda c){
+    Nodo* nuevo = new Nodo;
+    nuevo->info = c;
+    nuevo->sig = NULL;
+    if(lista == NULL || c.idMozo < lista->info.idMozo){
+       nuevo->sig = lista;
+       return nuevo;
+    }
+    Nodo* actual = lista;
+    while (actual->sig != NULL && actual->sig->info.idMozo <= c.idMozo) {
+        actual = actual->sig;
+    }
+    nuevo->sig = actual->sig;
+    actual->sig = nuevo;
+    return lista;
+}
 void ordenarComandasPorMozo(const char* nombre) {
     FILE* f = fopen(nombre, "rb");
     if (f == NULL) return;
 
-    Comanda v[MAX_COMANDAS];
-    int n = 0;
-    while (n < MAX_COMANDAS && fread(&v[n], sizeof(Comanda), 1, f) == 1) n++;
-
-    Comanda extra;
-    if (n == MAX_COMANDAS && fread(&extra, sizeof(Comanda), 1, f) == 1) {
-        cout << "Hay mas de " << MAX_COMANDAS << " ventas, no se puede ordenar." << endl;
-        fclose(f);
-        return;
+    Nodo* lista = NULL;
+    Comanda c;
+    while (fread(&c, sizeof(Comanda), 1, f) == 1) {
+        lista = insertarOrdenado(lista, c); //llamo a la funcion insertar ordenado
     }
     fclose(f);
-
-    for (int j = 1; j < n; j++) {
-        Comanda aux = v[j];
-        int k = j - 1;
-        while (k >= 0 && v[k].idMozo > aux.idMozo) {
-            v[k + 1] = v[k];
-            k--;
-        }
-        v[k + 1] = aux;
-    }
 
     f = fopen(nombre, "wb");
     if (f == NULL) return;
-    for (int j = 0; j < n; j++) fwrite(&v[j], sizeof(Comanda), 1, f);
-    fclose(f);
-}
 
+    Nodo* aux = lista;
+    while (aux != NULL) {
+        fwrite(&aux->info, sizeof(Comanda), 1, f);
+        aux = aux->sig;
+    }
+    fclose(f);
+
+    while (lista != NULL) {
+        aux = lista;
+        lista = lista->sig;
+        delete aux;
+    }
+}
 //MAIN
 int main() {
     
