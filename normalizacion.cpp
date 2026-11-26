@@ -28,12 +28,20 @@ struct Mozo{
 };
 
 struct Comanda{
-  char fecha[11];
   int idMozo;
   int codigoProducto;
   int cantidad;
   float comision;
 };
+
+//temporal
+ struct ComandaVenta {
+    char fecha[11]; // "DD-MM-AAAA"
+    int idMozo;
+    int codigoProducto;
+    int cantidad;
+    float comision;
+    };
 
 //1.Por pedido, la clave de mozo se cifra k=3 SI
 void cifrarClave(char clave[], int k);
@@ -44,17 +52,19 @@ void inventarioProductos(Producto prod[], int& plen);
 //4. busca productos para restarle SI
 int BuscarActualizarInv(Producto prod[], int plen, int codBuscado);
 //5.Asigna Id, comision total y ventas
-void leerComandasHistoricas(Producto prod[], int plen, Comanda ventas[], int vlen, Mozo mozos[], int& mlen, int k);
+void leerComandasHistoricas(Producto prod[], int plen, ComandaVenta ventas[], int& vlen, Mozo mozos[], int& mlen, int k);
 //6.Ordena las ventas por id
-void ordenarVentas(Comanda ventas[], int vlen);
+void ordenarVentas(ComandaVenta ventas[], int vlen);
 //7.Asigna nombre a las plantillas de ventas
-void asignaNombreDia(Comanda ventas[], int vlen);
+void asignarNombreDia(ComandaVenta ventas[], int vlen);
 //8.Actualizar stock
-void guardaStockActual(Producto prod[], int plen);
+void guardarStockActual(Producto prod[], int plen);
 //9. mozos crea archivo
 void generarArchivoMozo(Mozo mozos[], int mlen);
 
 int main(){
+
+
     const int MAX_Mozos=50;
     int mlen=0;
     const int MAX_Productos=100;
@@ -65,14 +75,14 @@ int main(){
 
     Mozo mozos[MAX_Mozos];
     Producto productos[MAX_Productos];
-    Comanda ventas[MAX_Ventas];
+    ComandaVenta ventas[MAX_Ventas];
 
     inventarioProductos(productos, plen);
 
     leerComandasHistoricas(productos, plen, ventas, vlen, mozos, mlen, k);
     ordenarVentas(ventas,  vlen);
-    asignaNombreDia(ventas, vlen);
-    guardaStockActual(productos,  plen);
+    asignarNombreDia(ventas, vlen);
+    guardarStockActual(productos,  plen);
     generarArchivoMozo(mozos,  mlen);
 
 
@@ -83,12 +93,13 @@ int main(){
 void cifrarClave(char clave[], int k){
 
     for(int i=0; clave[i]!='\0'; i++){
+
         clave[i]=clave[i]+k;
     }
 }
 
-///Aca al devolver la pos cuando es la primera vez que lo encuentra entonces retorna
-///la primera pos en la que es encontrado cada nombre y no reasigna
+//Aca al devolver la pos cuando es la primera vez que lo encuentra entonces retorna
+//la primera pos en la que es encontrado cada nombre y no reasigna
 int buscarMozo(Mozo mozos[], int mlen, char nombreBuscado[]){
 
     for(int i=0; i<mlen; i++){
@@ -133,7 +144,7 @@ int BuscarActualizarInv(Producto prod[], int plen, int codBuscado){
     return -1;
 }
 
-void leerComandasHistoricas(Producto prod[], int plen, Comanda ventas[], int& vlen, Mozo mozos[], int& mlen, int k){
+void leerComandasHistoricas(Producto prod[], int plen, ComandaVenta ventas[], int& vlen, Mozo mozos[], int& mlen, int k){
     FILE* fcomandas=fopen("comandas_historicas.dat","rb");
     if(fcomandas==NULL){
         cout<<"No se pudo abrir el archivo";
@@ -157,8 +168,8 @@ void leerComandasHistoricas(Producto prod[], int plen, Comanda ventas[], int& vl
         else{
             Mozo nuevo;
             nuevo.idMozo=mlen+1;
-            srtcpy(nuevo.nombre, comandas.nombreMozo);
-            srtcpy(nuevo.password, contraxdefecto);
+            strcpy(nuevo.nombre, comandas.nombreMozo);
+            strcpy(nuevo.password, contraxdefecto);
             nuevo.totalComision=comandas.comision;
 
             mozos[mlen]=nuevo;
@@ -198,10 +209,10 @@ void leerComandasHistoricas(Producto prod[], int plen, Comanda ventas[], int& vl
 
 }
 
-void ordenarVentas(Comanda ventas[], int vlen){
+void ordenarVentas(ComandaVenta ventas[], int vlen){
     for(int i=1; i<vlen; i++){
 
-    Comanda clave=ventas[i];
+    ComandaVenta clave=ventas[i];
     int j=i-1;
 
         while(j>=0 && (strcmp(ventas[j].fecha,clave.fecha)>0 || (strcmp(ventas[j].fecha, clave.fecha)==0 && ventas[j].idMozo>clave.idMozo))){
@@ -213,7 +224,7 @@ void ordenarVentas(Comanda ventas[], int vlen){
         cout<<"Se ordeno las ventas por fecha y Id"<<endl;
 }
 
-void asignarNombreDia(Comanda ventas[], int vlen){
+void asignarNombreDia(ComandaVenta ventas[], int vlen){
     int i=0;
     while(i<vlen){
         char fechaActual[11];
@@ -233,7 +244,13 @@ void asignarNombreDia(Comanda ventas[], int vlen){
 
         while(i<vlen && strcmp(ventas[i].fecha, fechaActual)==0){
 
-            fwrite(&ventas[i], sizeof(Comanda), 1, fdia);
+            Comanda c;
+            c.idMozo = ventas[i].idMozo;
+            c.codigoProducto = ventas[i].codigoProducto;
+            c.cantidad = ventas[i].cantidad;
+            c.comision = ventas[i].comision;
+
+            fwrite(&c, sizeof(Comanda), 1, fdia);
             i++;
         }
 
@@ -243,8 +260,8 @@ void asignarNombreDia(Comanda ventas[], int vlen){
     }
 }
 
-void guardaStockActual(Producto prod[], int plen){
-    FILE* fstock=fopen("inventario.dat", "wb");
+void guardarStockActual(Producto prod[], int plen){
+    FILE* fstock=fopen("inventario.dat", "rb+");
     if(fstock==NULL){
         cout<<"No se pudo abrir el archivo";
         return;
