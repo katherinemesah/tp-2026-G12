@@ -58,7 +58,7 @@ void ordenarVentas(ComandaVenta ventas[], int vlen);
 //7.Asigna nombre a las plantillas de ventas
 void asignarNombreDia(ComandaVenta ventas[], int vlen);
 //8.Actualizar stock
-void guardarStockActual(Producto prod[], int plen);
+void RestarProductoAlStock(const char* nombreArch, long pos, int cantidad);
 //9. mozos crea archivo
 void generarArchivoMozo(Mozo mozos[], int mlen);
 
@@ -82,7 +82,6 @@ int main(){
     leerComandasHistoricas(productos, plen, ventas, vlen, mozos, mlen, k);
     ordenarVentas(ventas,  vlen);
     asignarNombreDia(ventas, vlen);
-    guardarStockActual(productos,  plen);
     generarArchivoMozo(mozos,  mlen);
 
 
@@ -179,15 +178,12 @@ void leerComandasHistoricas(Producto prod[], int plen, ComandaVenta ventas[], in
 
         int posProd=BuscarActualizarInv(prod,  plen, comandas.codigoProducto);
         if(posProd!=-1){
-            prod[posProd].stockActual-=comandas.cantidad;
-
-        if(prod[posProd].stockActual<0){
-            cout<<"El stock esta en negativo";//<<comandas.codigoProducto<<"("<<prod[posProd].stockActual<<"unidades)"<<endl;
+            RestarProductoAlStock("inventario.dat", posProd, comandas.cantidad);
         }
-    }
         else{
-            cout<<"El producto con codigo"<<comandas.codigoProducto<<" no existe"<<endl;
+            cout<<"El producto "<<comandas.codigoProducto<<" no existe"<<endl;
         }
+
 
         if(vlen<100){
             strcpy(ventas[vlen].fecha, comandas.fecha);
@@ -260,14 +256,21 @@ void asignarNombreDia(ComandaVenta ventas[], int vlen){
     }
 }
 
-void guardarStockActual(Producto prod[], int plen){
+void RestarProductoAlStock(const char* nombreArch, long pos, int cantidad){
     FILE* fstock=fopen("inventario.dat", "rb+");
     if(fstock==NULL){
         cout<<"No se pudo abrir el archivo";
         return;
     }
-    for(int i=0; i<plen; i++){
-        fwrite(&prod[i], sizeof(Producto), 1, fstock);
+
+    Producto p;
+    if(fseek(fstock, pos * sizeof(Producto), SEEK_SET)==0&&fread(&p, sizeof(Producto),1, fstock)==1){
+
+        p.stockActual-=cantidad;
+
+        if(fseek(fstock, pos * sizeof(Producto), SEEK_SET)==0){
+            fwrite(&p, sizeof(Producto),1, fstock);
+        }
     }
     fclose(fstock);
     cout<<"El inventario se actualizo con exito"<<endl;
